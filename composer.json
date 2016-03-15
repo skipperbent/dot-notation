@@ -17,7 +17,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Pecee\\": "src/Pecee/"
+			"Pecee\\": "src/"
 		}
 	}
 }
