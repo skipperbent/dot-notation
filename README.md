@@ -7,10 +7,10 @@ Add the latest version of dot-notation to your ```composer.json```
 ```json
 {
     "require": {
-        "pecee/dot-notation": "1.*"
+        "pecee/dot-notation": "2.*"
     },
     "require-dev": {
-        "pecee/dot-notation": "1.*"
+        "pecee/dot-notation": "2.*"
     }
 }
 ```
@@ -21,13 +21,14 @@ This example returns an array from a basic dot formatted string, simular to the 
 
 ```php
 $d = new \Pecee\DotNotation(['one' => ['two' => 2]]);
+$d->set('one.two', 3);
 echo $d->getValues();
 ```
 
-**output:**
+**Output:**
 
 ```php
-['one' => ['two' => 2]]
+['one' => ['two' => 3]]
 ```
 
 ### Credits
