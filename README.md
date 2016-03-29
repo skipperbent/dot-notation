@@ -15,7 +15,7 @@ Add the latest version of dot-notation to your ```composer.json```
 }
 ```
 
-## Example
+## Examples
 
 This example returns an array from a basic dot formatted string, simular to the JSON syntax:
 
@@ -28,7 +28,70 @@ echo $d->getValues();
 **Output:**
 
 ```php
-['one' => ['two' => 3]]
+array ('one' => ['two' => 3]);
+```
+
+### Easily map one array to another
+
+```php
+class CustomerMapper {
+
+    protected $customer;
+
+    public function __construct(array $values) {
+    
+        // Map fields (from -> to)
+    
+        $this->customer = $this->map($values, [
+            'customerId' => 'id',
+            'relationshipStatus' => 'relationship_status',
+            'customerGender' => 'gender',
+            'meta.name' => 'name',
+        ]);
+    }
+
+    protected function map(array $input, array $mapping) {
+        $output = array();
+    
+        foreach($mapping as $before => $after) {
+    
+            $map = new DotNotation($input);
+            $value = $map->get($before);
+    
+            $map = new DotNotation($output);
+            $map->set($after, $value);
+            $output = $map->getValues();
+        }
+    
+        return $output;
+    }
+    
+    protected function getCustomer() {
+        return $this->customer;
+    }
+}
+
+// Example:
+
+$mapper = new CustomerMapper([
+    'customerId' => 123456,
+    'relationshipStatus' => 'single',
+    'customerGender' => 'male',
+    'meta' => ['name' => 'Peter']
+]);
+
+$customer = $mapper->getCustomer();
+```
+
+**Output:**
+
+```php
+array(
+    'id' => 123456,
+    'relationship_status' => 'single',
+    'gender' => 'male',
+    'name' => 'Peter',
+);
 ```
 
 ### Credits
