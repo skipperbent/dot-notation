@@ -1,17 +1,18 @@
 <?php
-namespace Pecee;
+
+namespace Pecee\Collection;
 
 /**
  * Dot notation for access multidimensional arrays.
- * 
+ *
  * $dn = new DotNotation(['bar'=>['baz'=>['foo'=>true]]]);
- * 
+ *
  * $value = $dn->get('bar.baz.foo'); // $value == true
- * 
+ *
  * $dn->set('bar.baz.foo', false); // ['foo'=>false]
- * 
+ *
  * $dn->add('bar.baz', ['boo'=>true]); // ['foo'=>false,'boo'=>true]
- * 
+ *
  * @author Anton Medvedev <anton (at) elfet (dot) ru>
  * @author Simon Sessingø
  * @version 2.0
@@ -25,7 +26,7 @@ class DotNotation
     /**
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * @var array
@@ -44,14 +45,15 @@ class DotNotation
     {
         $array = $this->values;
 
-        if (!empty($path)) {
+        if (empty($path) === false) {
             $keys = $this->explode($path);
             foreach ($keys as $key) {
                 if (isset($array[$key])) {
                     $array = $array[$key];
-                } else {
-                    return $default;
+                    continue;
                 }
+
+                return $default;
             }
         }
 
@@ -61,29 +63,30 @@ class DotNotation
     /**
      * @param string $path
      * @param mixed $value
+     * @throws \RuntimeException
      */
     public function set($path, $value)
     {
-        if (!empty($path)) {
-            $at = & $this->values;
+        if (empty($path) === false) {
+            $at = &$this->values;
             $keys = $this->explode($path);
 
-            while (count($keys)) {
+            while (count($keys) > 0) {
                 if (count($keys) === 1) {
-                    if (is_array($at)) {
+                    if (is_array($at) === true) {
                         $at[array_shift($keys)] = $value;
                     } else {
                         throw new \RuntimeException("Can not set value at this path ($path) because is not array.");
                     }
-                } else {
-                    $key = array_shift($keys);
-
-                    if (!isset($at[$key])) {
-                        $at[$key] = array();
-                    }
-
-                    $at = & $at[$key];
+                    continue;
                 }
+                $key = array_shift($keys);
+
+                if (isset($at[$key]) === false) {
+                    $at[$key] = [];
+                }
+
+                $at = &$at[$key];
             }
         } else {
             $this->values = $value;
@@ -93,6 +96,7 @@ class DotNotation
     /**
      * @param $path
      * @param array $values
+     * @throws \RuntimeException
      */
     public function add($path, array $values)
     {
@@ -109,11 +113,12 @@ class DotNotation
         $keys = $this->explode($path);
         $array = $this->values;
         foreach ($keys as $key) {
-            if (isset($array[$key])) {
+            if (isset($array[$key]) === true) {
                 $array = $array[$key];
-            } else {
-                return false;
+                continue;
             }
+
+            return false;
         }
 
         return true;
@@ -175,19 +180,21 @@ class DotNotation
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset ($merged[$key]) && is_array($merged[$key])) {
-                if (is_int($key)) {
+            if (is_array($value) === true && isset($merged[$key]) === true && is_array($merged[$key]) === true) {
+                if (is_int($key) === true) {
                     $merged[] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-                } else {
-                    $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+                    continue;
                 }
-            } else {
-                if (is_int($key)) {
-                    $merged[] = $value;
-                } else {
-                    $merged[$key] = $value;
-                }
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+                continue;
             }
+
+            if (is_int($key) === true) {
+                $merged[] = $value;
+                continue;
+            }
+
+            $merged[$key] = $value;
         }
 
         return $merged;

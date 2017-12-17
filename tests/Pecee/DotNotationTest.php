@@ -1,12 +1,17 @@
 <?php
+namespace Pecee;
+
+use Pecee\Collection\DotNotation;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for DotNotation class.
- * 
+ *
  * @author Anton Medvedev <anton (at) elfet (dot) ru>
  * @version 2.0
  * @license MIT
  */
-class DotNotationTest extends \PHPUnit_Framework_TestCase
+class DotNotationTest extends TestCase
 {
     public function testSet()
     {
@@ -93,4 +98,3 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($d->have('false'));
     }
 }
- 
