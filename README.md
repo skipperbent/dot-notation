@@ -1,23 +1,16 @@
-# dot-notation
-Dot notation support for JSON-like syntax for easily creating arrays in PHP.
+# pecee/dot-notation
+Dot notation support for JSON-like syntax for easily creating and mapping arrays in PHP.
 
 ## Installation
-Add the latest version of dot-notation to your ```composer.json```
+Run the following command in terminal to add the latest version of pecee/dot-notation library to your project.
 
-```json
-{
-    "require": {
-        "pecee/dot-notation": "2.*"
-    },
-    "require-dev": {
-        "pecee/dot-notation": "2.*"
-    }
-}
+```
+composer require pecee/dot-notation
 ```
 
 ## Examples
 
-This example returns an array from a basic dot formatted string, simular to the JSON syntax:
+This example returns an array from a basic dot formatted string, similar to the JSON syntax:
 
 ```php
 $d = new \Pecee\DotNotation(['one' => ['two' => 2]]);
